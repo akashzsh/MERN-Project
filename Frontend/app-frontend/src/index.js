@@ -3,14 +3,31 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ErrorPage from "./ErrorPage";
+import Users from "./users/pages/Users";
+import NewPlace from "./places/pages/NewPlace";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/users",
+    element: <Users />,
+  },
+  {
+    path: "places/new",
+    element: <NewPlace />,
+  },
+]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
