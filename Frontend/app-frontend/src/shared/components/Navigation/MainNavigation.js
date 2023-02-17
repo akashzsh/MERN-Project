@@ -21,13 +21,16 @@ const MainNavigation = (props) => {
           }}
         />
       )}
-      {open && (
-        <SideDrawer>
-          <nav className="main-navigation__drawer-nav">
-            <NavLinks />
-          </nav>
-        </SideDrawer>
-      )}
+      <SideDrawer
+        show={open}
+        onClick={() => {
+          setOpen(false);
+        }}
+      >
+        <nav className="main-navigation__drawer-nav">
+          <NavLinks />
+        </nav>
+      </SideDrawer>
       <MainHeader>
         <button
           className="main-navigation__menu-btn"
