@@ -9,9 +9,9 @@ import {
 import "./NewPlace.css";
 
 const formReducer = (state, action) => {
+  let formIsValid = true;
   switch (action.type) {
     case "INPUT_CHANGE":
-      let formIsValid = true;
       for (const inputId in state.inputs) {
         if (inputId === action.inputId) {
           formIsValid = formIsValid && action.isValid;
@@ -56,8 +56,13 @@ export default function NewPlace() {
     });
   }, []);
 
+  const placeSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState.inputs);
+  };
+
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={placeSubmitHandler}>
       <Input
         id="title"
         element="input"
@@ -75,7 +80,9 @@ export default function NewPlace() {
         errorText="Please enter a valid description (atleast 5 characters)"
         onInput={inputHandler}
       />
-      <Button type="submit" disabled={!formState.isValid}></Button>
+      <Button type="submit" disabled={!formState.isValid}>
+        ADD PLACE
+      </Button>
     </form>
   );
 }
