@@ -8,6 +8,7 @@ import ErrorPage from "./ErrorPage";
 import Users from "./users/pages/Users";
 import NewPlace from "./places/pages/NewPlace";
 import UserPlaces from "./places/pages/UserPlaces";
+import UpdatePlace from "./places/pages/UpdatePlace";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: ":userId/places",
         element: <UserPlaces />,
+      },
+      {
+        path: "places/:placeId",
+        element: <UpdatePlace />,
       },
     ],
   },
