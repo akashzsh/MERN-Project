@@ -1,11 +1,13 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Button from "../../shared/components/FormElements/Button";
+
 import Input from "../../shared/components/FormElements/Input";
+import Button from "../../shared/components/FormElements/Button";
 import {
-  VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
+  VALIDATOR_MINLENGTH,
 } from "../../shared/util/validators";
+import "./PlaceForm.css";
 
 const DUMMY_PLACES = [
   {
@@ -40,24 +42,26 @@ const DUMMY_PLACES = [
 
 const UpdatePlace = () => {
   const placeId = useParams().placeId;
+
   const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
 
-  if (!identifiedPlace)
+  if (!identifiedPlace) {
     return (
       <div className="center">
         <h2>Could not find place!</h2>
       </div>
     );
+  }
 
   return (
-    <form>
+    <form className="place-form">
       <Input
         id="title"
         element="input"
         type="text"
         label="Title"
         validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid title"
+        errorText="Please enter a valid title."
         onInput={() => {}}
         value={identifiedPlace.title}
         valid={true}
@@ -67,7 +71,7 @@ const UpdatePlace = () => {
         element="textarea"
         label="Description"
         validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText="Please enter a valid description (min 5 characters required)"
+        errorText="Please enter a valid description (min. 5 characters)."
         onInput={() => {}}
         value={identifiedPlace.description}
         valid={true}
