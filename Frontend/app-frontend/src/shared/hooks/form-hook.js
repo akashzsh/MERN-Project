@@ -5,6 +5,7 @@ const formReducer = (state, action) => {
   switch (action.type) {
     case "INPUT_CHANGE":
       for (const inputId in state.inputs) {
+        if (!state.inputs[inputId]) continue;
         if (inputId === action.inputId) {
           formIsValid = formIsValid && action.isValid;
         } else {
