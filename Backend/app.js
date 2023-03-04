@@ -7,6 +7,4 @@ const app = express();
 
 app.use("/api/places", placesRoutes);
 
-app.listen(5000, () => {
-  console.log("running");
-});
+app.listen(5000);
