@@ -36,4 +36,11 @@ router.get("/:pid", (req, res, next) => {
   res.json({ message: place });
 });
 
+router.get("/user/:uid", (req, res, next) => {
+  const creator = DUMMY_PLACES.find((currPlace) => {
+    return currPlace.creatorId === req.params.uid;
+  });
+  res.json({ message: creator });
+});
+
 module.exports = router;
