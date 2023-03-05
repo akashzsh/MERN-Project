@@ -55,12 +55,16 @@ const getPlacesByUserId = (req, res, next) => {
 const createPlace = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
+
   const newPlace = req.body;
   DUMMY_PLACES.push(newPlace);
   res.status(201).json({ DUMMY_PLACES });
 };
 
 const updatePlace = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
+
   const { title, description } = req.body;
   const placeId = req.params.pid;
 
@@ -80,6 +84,10 @@ const updatePlace = (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
   const placeId = req.params.pid;
+  const doesPlaceExist = DUMMY_PLACES.find(
+    (currPlace) => currPlace.id === placeId
+  );
+  if (!doesPlaceExist) throw new HttpError("Invalid Id", 404);
   DUMMY_PLACES.splice(placeId, 1);
   res.status(200).json({ data: DUMMY_PLACES });
 };
