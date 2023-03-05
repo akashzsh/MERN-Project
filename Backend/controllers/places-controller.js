@@ -23,7 +23,7 @@ const DUMMY_PLACES = [
       lng: 9.0968524,
     },
     address: "Next to England",
-    creatorId: "u2",
+    creatorId: "u1",
   },
 ];
 
@@ -39,16 +39,16 @@ const getPlaceById = (req, res, next) => {
   res.json({ message: place });
 };
 
-const getPlaceByUserId = (req, res, next) => {
-  const creator = DUMMY_PLACES.find((currPlace) => {
+const getPlacesByUserId = (req, res, next) => {
+  const placesByCreator = DUMMY_PLACES.filter((currPlace) => {
     return currPlace.creatorId === req.params.uid;
   });
-  if (!creator) {
+  if (placesByCreator.length === 0) {
     return next(
       new HttpError("Could not find a place with the provided user id", 404)
     );
   }
-  res.json({ message: creator });
+  res.json(placesByCreator);
 };
 
 const createPlace = (req, res, next) => {
@@ -82,7 +82,7 @@ const deletePlace = (req, res, next) => {
 };
 
 exports.getPlaceById = getPlaceById;
-exports.getPlaceByUserId = getPlaceByUserId;
+exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
