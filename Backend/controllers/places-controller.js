@@ -1,4 +1,5 @@
 const HttpError = require("../models/http-error");
+const { validationResult } = require("express-validator");
 
 const DUMMY_PLACES = [
   {
@@ -52,6 +53,8 @@ const getPlacesByUserId = (req, res, next) => {
 };
 
 const createPlace = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
   const newPlace = req.body;
   DUMMY_PLACES.push(newPlace);
   res.status(201).json({ DUMMY_PLACES });
