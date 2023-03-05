@@ -51,5 +51,12 @@ const getPlaceByUserId = (req, res, next) => {
   res.json({ message: creator });
 };
 
+const createPlace = (req, res, next) => {
+  const newPlace = req.body;
+  DUMMY_PLACES.push(newPlace);
+  res.status(201).json({ DUMMY_PLACES });
+};
+
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
+exports.createPlace = createPlace;
