@@ -75,7 +75,11 @@ const updatePlace = (req, res, next) => {
   res.status(200).json(updatedPlace);
 };
 
-const deletePlace = (req, res, next) => {};
+const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  DUMMY_PLACES.splice(placeId, 1);
+  res.status(200).json({ data: DUMMY_PLACES });
+};
 
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
