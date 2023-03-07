@@ -23,4 +23,10 @@ const createProduct = async (req, res, next) => {
   res.json({ result });
 };
 
+const getProducts = async (req, res, next) => {
+  const products = await ProductModel.find();
+  res.json({ products });
+};
+
 exports.createProduct = createProduct;
+exports.getProducts = getProducts;
