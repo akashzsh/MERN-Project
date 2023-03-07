@@ -48,17 +48,15 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
+    image: "https://live.staticflickr.com/7631/26849088292_36fc52ee90_b.jpg",
     password,
-    image:
-      "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg",
     places,
   });
 
   try {
     await createdUser.save();
-  } catch (error) {
-    console.log(error);
-    return next(new HttpError("Signing up failed. Please try again later."));
+  } catch (err) {
+    return next(new HttpError("Signing up failed, please try again.", 500));
   }
 
   res.status(201).json({ user: createdUser });
