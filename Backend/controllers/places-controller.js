@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
+const Place = require("../models/place");
 
 const DUMMY_PLACES = [
   {
@@ -52,13 +53,28 @@ const getPlacesByUserId = (req, res, next) => {
   res.json(placesByCreator);
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
 
-  const newPlace = req.body;
-  DUMMY_PLACES.push(newPlace);
-  res.status(201).json({ DUMMY_PLACES });
+  const { title, description, address, creatorId } = req.body;
+
+  const createdPlace = new Place({
+    title,
+    description,
+    address,
+    image:
+      "https://images.unsplash.com/photo-1638272750685-81820148329b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+    creatorId,
+  });
+
+  try {
+    await createdPlace.save();
+  } catch (error) {
+    return next(new HttpError("Creating place failed, please try again", 500));
+  }
+
+  res.status(201).json({ createdPlace });
 };
 
 const updatePlace = (req, res, next) => {
