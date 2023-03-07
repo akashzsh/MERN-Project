@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
+const User = require("../models/user");
 
 let DUMMY_USERS = [
   {
@@ -26,23 +27,47 @@ const getAllUsers = (req, res, next) => {
   res.json({ data: DUMMY_USERS });
 };
 
-const signup = (req, res, next) => {
+const signup = async (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
-  const newUser = req.body;
+  if (!errors.isEmpty())
+    return next(new HttpError("Invalid request body", 422));
+  const { name, email, password, places } = req.body;
 
-  const hasUser = DUMMY_USERS.find(
-    (currUser) => currUser.email == newUser.email
-  );
-  if (hasUser) return next(new HttpError("Already Registered User", 422));
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (error) {
+    return next(new HttpError("Something went wrong. Could not sign up", 500));
+  }
 
-  DUMMY_USERS = { ...DUMMY_USERS, newUser };
-  res.status(201).json(DUMMY_USERS);
+  if (existingUser)
+    return next(
+      new HttpError("User already exists. Please login instead", 422)
+    );
+
+  const createdUser = new User({
+    name,
+    email,
+    password,
+    image:
+      "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg",
+    places,
+  });
+
+  try {
+    await createdUser.save();
+  } catch (error) {
+    console.log(error);
+    return next(new HttpError("Signing up failed. Please try again later."));
+  }
+
+  res.status(201).json({ user: createdUser });
 };
 
 const login = (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
+  if (!errors.isEmpty())
+    return next(new HttpError("Invalid request body", 422));
   const { email, password } = req.body;
   const identifiedUser = DUMMY_USERS.find(
     (currUser) => currUser.email === email

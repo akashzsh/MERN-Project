@@ -67,7 +67,8 @@ const getPlacesByUserId = async (req, res, next) => {
 
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
+  if (!errors.isEmpty())
+    return next(new HttpError("Invalid request body", 422));
 
   const { title, description, address, creatorId } = req.body;
 
@@ -91,7 +92,8 @@ const createPlace = async (req, res, next) => {
 
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
+  if (!errors.isEmpty())
+    return next(new HttpError("Invalid request body", 422));
 
   const { title, description } = req.body;
   const placeId = req.params.pid;
