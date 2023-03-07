@@ -58,7 +58,7 @@ const getPlacesByUserId = async (req, res, next) => {
     return next(new HttpError("Could not find a place", 500));
   }
 
-  if (!place)
+  if (!place || place.length === 0)
     return next(
       new HttpError("Could not find a place with the given user id", 404)
     );
@@ -89,35 +89,48 @@ const createPlace = async (req, res, next) => {
   res.status(201).json({ createdPlace });
 };
 
-const updatePlace = (req, res, next) => {
+const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) throw new HttpError("Invalid request body", 422);
 
   const { title, description } = req.body;
   const placeId = req.params.pid;
 
-  const updatedPlace = {
-    ...DUMMY_PLACES.find((currPlace) => currPlace.id === placeId),
-  };
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (error) {
+    return next(new HttpError("Could not update the place", 500));
+  }
 
-  const placeIndex = DUMMY_PLACES.findIndex(
-    (currPlace) => currPlace.id == placeId
-  );
-  updatedPlace.title = title;
-  updatedPlace.description = description;
+  place.title = title;
+  place.description = description;
 
-  DUMMY_PLACES[placeIndex] = updatedPlace;
-  res.status(200).json(updatedPlace);
+  try {
+    await place.save();
+  } catch (error) {
+    return next(new HttpError("Something went wrong. Could not update.", 500));
+  }
+
+  res.json({ place });
 };
 
-const deletePlace = (req, res, next) => {
+const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
-  const doesPlaceExist = DUMMY_PLACES.find(
-    (currPlace) => currPlace.id === placeId
-  );
-  if (!doesPlaceExist) throw new HttpError("Invalid Id", 404);
-  DUMMY_PLACES.splice(placeId, 1);
-  res.status(200).json({ data: DUMMY_PLACES });
+
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (error) {
+    return next(new HttpError("Something went wrong. Could not delete", 500));
+  }
+
+  if (!place)
+    return next(new HttpError("Could not find a place with the given id", 404));
+
+  const result = await Place.deleteOne({ _id: placeId });
+
+  res.json({ message: result });
 };
 
 exports.getPlaceById = getPlaceById;
