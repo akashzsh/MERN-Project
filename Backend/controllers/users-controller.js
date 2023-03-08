@@ -74,17 +74,24 @@ const signup = async (req, res, next) => {
   res.status(201).json({ user: createdUser });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return next(new HttpError("Invalid request body", 422));
+
   const { email, password } = req.body;
-  const identifiedUser = DUMMY_USERS.find(
-    (currUser) => currUser.email === email
-  );
-  if (!identifiedUser || !identifiedUser.password === password)
-    return next(new HttpError("Could not find the user", 401));
-  res.json({ message: "login successful" });
+
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (error) {
+    return next(new HttpError("Something went wrong. Could not login", 500));
+  }
+
+  if (!existingUser || existingUser.password !== password)
+    return next(new HttpError("Invalid Credentials. Could not login", 401));
+
+  res.json({ message: "Login Successful" });
 };
 
 exports.getAllUsers = getAllUsers;
