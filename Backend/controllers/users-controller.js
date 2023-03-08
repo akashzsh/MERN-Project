@@ -23,8 +23,20 @@ let DUMMY_USERS = [
   },
 ];
 
-const getAllUsers = (req, res, next) => {
-  res.json({ data: DUMMY_USERS });
+const getAllUsers = async (req, res, next) => {
+  let users;
+  try {
+    users = await User.find();
+  } catch (error) {
+    return next(
+      new HttpError("Something went wrong. Could not retrieve users", 500)
+    );
+  }
+
+  if (!users || users.length === 0)
+    return next(new HttpError("No users found", 404));
+
+  res.json({ users });
 };
 
 const signup = async (req, res, next) => {

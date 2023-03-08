@@ -2,32 +2,21 @@ const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const Place = require("../models/place");
 
-const DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "Australia",
-    description:
-      "Australia is a vast and diverse continent with unique flora and fauna, stunning natural landscapes, and a rich cultural heritage.",
-    location: {
-      lat: -21.0160213,
-      lng: 95.1370107,
-    },
-    address: "Next to New Zealand",
-    creatorId: "u1",
-  },
-  {
-    id: "p2",
-    title: "South Africa",
-    description:
-      "South Africa is a vast and diverse continent with unique flora and fauna, stunning natural landscapes, and a rich cultural heritage.",
-    location: {
-      lat: -33.2359591,
-      lng: 9.0968524,
-    },
-    address: "Next to England",
-    creatorId: "u1",
-  },
-];
+const getPlaces = async (req, res, next) => {
+  let places;
+  try {
+    places = await Place.find();
+  } catch (error) {
+    return next(
+      new HttpError("Something went wrong. Could not retrieve places", 500)
+    );
+  }
+
+  if (!places || places.length === 0)
+    return next(new HttpError("No places found", 404));
+
+  res.json({ places });
+};
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -36,7 +25,9 @@ const getPlaceById = async (req, res, next) => {
   try {
     place = await Place.findById(placeId);
   } catch (error) {
-    return next(new HttpError("Could not find a place", 500));
+    return next(
+      new HttpError("Something went wrong. Could not find a place", 500)
+    );
   }
 
   if (!place) {
@@ -55,7 +46,9 @@ const getPlacesByUserId = async (req, res, next) => {
   try {
     place = await Place.find({ creatorId: userId });
   } catch (error) {
-    return next(new HttpError("Could not find a place", 500));
+    return next(
+      new HttpError("Something went wrong. Could not find a place", 500)
+    );
   }
 
   if (!place || place.length === 0)
@@ -105,16 +98,16 @@ const updatePlace = async (req, res, next) => {
     return next(new HttpError("Could not update the place", 500));
   }
 
-  place.title = title;
-  place.description = description;
-
   try {
-    await place.save();
+    await Place.updateOne(
+      { _id: placeId },
+      { title: title, description: description }
+    );
   } catch (error) {
     return next(new HttpError("Something went wrong. Could not update.", 500));
   }
 
-  res.json({ place });
+  res.json({ message: "updated 1 place" });
 };
 
 const deletePlace = async (req, res, next) => {
@@ -140,3 +133,4 @@ exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
+exports.getPlaces = getPlaces;
