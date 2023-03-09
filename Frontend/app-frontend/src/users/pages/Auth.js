@@ -11,6 +11,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
+import axios from "axios";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
@@ -31,10 +32,32 @@ const Auth = () => {
     false
   );
 
-  const placeSubmitHandler = (event) => {
+  const placeSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
-    auth.login();
+
+    if (isLoginMode) {
+      console.log("Will do it");
+    } else {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/users/signup",
+          JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+      auth.login();
+    }
   };
 
   const switchModeHandler = () => {
