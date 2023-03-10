@@ -11,11 +11,14 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import axios from "axios";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
   const [formState, inputHandler, setFormData] = useForm(
@@ -39,6 +42,7 @@ const Auth = () => {
       console.log("Will do it");
     } else {
       try {
+        setLoading(true);
         const response = await axios.post(
           "http://localhost:5000/api/users/signup",
           JSON.stringify({
@@ -53,10 +57,13 @@ const Auth = () => {
           }
         );
         console.log(response.data);
+        setLoading(false);
+        auth.login();
       } catch (error) {
         console.log(error);
+        setLoading(false);
+        setError(error.message || "Something went wrong. Please try again.");
       }
-      auth.login();
     }
   };
 
@@ -85,6 +92,7 @@ const Auth = () => {
 
   return (
     <Card className="authentication">
+      {loading && <LoadingSpinner asOverlay={true} />}
       <h2>Login Required</h2>
       <hr />
       <form onSubmit={placeSubmitHandler}>
