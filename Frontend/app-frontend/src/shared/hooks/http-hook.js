@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const useHttpClient = () => {
+export const useHttpClient = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -21,12 +21,16 @@ const useHttpClient = () => {
           headers: headers,
           signal: httpAbortController.signal,
         });
-
+        setLoading(false);
+        activeHttpRequests.current = activeHttpRequests.current.filter(
+          (reqController) => reqController !== httpAbortController
+        );
         return response.data;
       } catch (error) {
+        setLoading(false);
         setError(error.response.data.message);
+        throw error;
       }
-      setLoading(false);
     },
     []
   );
@@ -45,5 +49,3 @@ const useHttpClient = () => {
 
   return { loading, error, sendRequest, clearError };
 };
-
-export default useHttpClient;
