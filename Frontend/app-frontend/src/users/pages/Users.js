@@ -1,30 +1,44 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { UsersList } from "../components/UsersList";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 
 export default function Users() {
-  const USERS = [
-    {
-      id: "u1",
-      name: "Akash",
-      image:
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
-      places: "4",
-    },
-    {
-      id: "u2",
-      name: "Aman",
-      image:
-        "https://cdn.pixabay.com/photo/2014/02/27/16/10/flowers-276014__480.jpg",
-      places: "2",
-    },
-    {
-      id: "u3",
-      name: "Aaditya",
-      image:
-        "https://cdn.pixabay.com/photo/2015/12/01/20/28/road-1072823__480.jpg",
-      places: "1",
-    },
-  ];
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+  const [loadedUsers, setLoadedUsers] = useState();
 
-  return <UsersList items={USERS} />;
+  const getUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:5000/api/users");
+      setLoadedUsers(response.data.users);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setError(error.response.data.message || "Unknown Error Occurred");
+      console.log(error.response.data.message || "Unknown Error Occurred");
+    }
+  };
+
+  const errorHandler = () => {
+    setError(null);
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={errorHandler} />
+      {loading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!loading && loadedUsers && <UsersList items={loadedUsers} />}
+    </React.Fragment>
+  );
 }

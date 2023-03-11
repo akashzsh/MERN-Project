@@ -23,7 +23,7 @@ export const UsersList = (props) => {
             id={user.id}
             name={user.name}
             image={user.image}
-            placeCount={user.places}
+            placeCount={user.places.length}
           />
         );
       })}
