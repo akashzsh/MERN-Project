@@ -38,11 +38,32 @@ const Auth = () => {
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
 
+    setLoading(true);
     if (isLoginMode) {
-      console.log("Will do it");
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/users/login",
+          JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setLoading(false);
+        auth.login();
+      } catch (error) {
+        setLoading(false);
+        setError(
+          error.response.data.message ||
+            "Something went wrong. Please try again."
+        );
+      }
     } else {
       try {
-        setLoading(true);
         const response = await axios.post(
           "http://localhost:5000/api/users/signup",
           JSON.stringify({
