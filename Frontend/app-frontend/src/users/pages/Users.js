@@ -14,7 +14,6 @@ export default function Users() {
         "http://localhost:5000/api/users",
         "get"
       );
-      console.log(response.users);
       setLoadedUsers(response.users);
     } catch (error) {}
   };
