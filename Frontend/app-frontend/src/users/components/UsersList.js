@@ -19,8 +19,8 @@ export const UsersList = (props) => {
       {props.items.map((user) => {
         return (
           <UserItem
-            key={user.id}
-            id={user.id}
+            key={user._id}
+            id={user._id}
             name={user.name}
             image={user.image}
             placeCount={user.places.length}

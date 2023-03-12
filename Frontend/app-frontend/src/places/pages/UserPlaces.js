@@ -1,45 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import PlaceList from "../components/PlaceList";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 
 const UserPlaces = () => {
   const userId = useParams().userId;
-  const DUMMY_PLACES = [
-    {
-      id: "p1",
-      title: "Australia",
-      imageUrl:
-        "https://cdn.pixabay.com/photo/2014/06/06/09/36/sydney-opera-house-363244__480.jpg",
-      description:
-        "Australia is a vast and diverse continent with unique flora and fauna, stunning natural landscapes, and a rich cultural heritage.",
-      address: "Next to New Zealand",
-      creatorId: "u1",
-      coordinates: {
-        lat: -21.0160213,
-        lng: 95.1370107,
-      },
-    },
-    {
-      id: "p2",
-      title: "South Africa",
-      imageUrl:
-        "https://cdn.pixabay.com/photo/2017/05/19/18/51/lion-2327225__480.jpg",
-      description:
-        "South Africa is a vast and diverse continent with unique flora and fauna, stunning natural landscapes, and a rich cultural heritage.",
-      address: "Next to England",
-      creatorId: "u2",
-      coordinates: {
-        lat: -33.2359591,
-        lng: 9.0968524,
-      },
-    },
-  ];
+  const [loadedPlaces, setLoadedPlaces] = useState();
+  const { clearError, loading, error, sendRequest } = useHttpClient();
 
-  const filteredPlaces = DUMMY_PLACES.filter(
-    (item) => item.creatorId === userId
+  async function getPlaces() {
+    try {
+      const response = await sendRequest(
+        `http://localhost:5000/api/places/user/${userId}`
+      );
+      setLoadedPlaces(response.place);
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    getPlaces();
+  }, [sendRequest, userId]);
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {loading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!loading && loadedPlaces && <PlaceList items={loadedPlaces} />}
+    </React.Fragment>
   );
-  return <PlaceList items={filteredPlaces} />;
 };
 
 export default UserPlaces;
