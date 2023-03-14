@@ -53,16 +53,17 @@ const Auth = () => {
       } catch (error) {}
     } else {
       try {
+        const formData = new FormData();
+        formData.append("email", formState.inputs.email.value);
+        formData.append("name", formState.inputs.name.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
         const response = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "post",
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
+          formData,
           {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           }
         );
         auth.login(response.user._id);
