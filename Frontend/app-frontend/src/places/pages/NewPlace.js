@@ -11,6 +11,7 @@ import "./PlaceForm.css";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { useHistory } from "react-router-dom";
 
@@ -31,6 +32,10 @@ export default function NewPlace() {
         value: "",
         isValid: false,
       },
+      image: {
+        value: null,
+        isValid: false,
+      },
     },
     false
   );
@@ -39,20 +44,16 @@ export default function NewPlace() {
 
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append("title", formState.inputs.title.value);
+    formData.append("description", formState.inputs.description.value);
+    formData.append("address", formState.inputs.address.value);
+    formData.append("creatorId", auth.userId);
+    formData.append("image", formState.inputs.image.value);
     try {
-      await sendRequest(
-        "http://localhost:5000/api/places",
-        "post",
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-          address: formState.inputs.address.value,
-          creatorId: auth.userId,
-        }),
-        {
-          "Content-Type": "application/json",
-        }
-      );
+      await sendRequest("http://localhost:5000/api/places", "post", formData, {
+        "Content-Type": "multipart/form-data",
+      });
       history.push("/");
     } catch (error) {}
   };
@@ -86,6 +87,11 @@ export default function NewPlace() {
           validators={[VALIDATOR_REQUIRE()]}
           errorText="Please enter a valid address"
           onInput={inputHandler}
+        />
+        <ImageUpload
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide an image"
         />
         <Button type="submit" disabled={!formState.isValid}>
           ADD PLACE
