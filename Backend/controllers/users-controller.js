@@ -72,7 +72,7 @@ const signup = async (req, res, next) => {
     return next(new HttpError("Signing up failed, please try again.", 500));
   }
 
-  res.status(201).json({ token });
+  res.status(201).json({ userId: createdUser.id, token: token });
 };
 
 const login = async (req, res, next) => {
@@ -113,7 +113,11 @@ const login = async (req, res, next) => {
     return next(new HttpError("Logging in failed, please try again.", 500));
   }
 
-  res.json({ message: "Login Successful", token: token });
+  res.json({
+    message: "Login Successful",
+    userId: existingUser.id,
+    token: token,
+  });
 };
 
 exports.getAllUsers = getAllUsers;
