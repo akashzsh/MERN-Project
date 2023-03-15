@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
+console.log(process.env.TOKENPRIVATEKEY);
+
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
