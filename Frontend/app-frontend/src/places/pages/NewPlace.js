@@ -53,6 +53,7 @@ export default function NewPlace() {
     try {
       await sendRequest("http://localhost:5000/api/places", "post", formData, {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${auth.token}`,
       });
       history.push("/");
     } catch (error) {}

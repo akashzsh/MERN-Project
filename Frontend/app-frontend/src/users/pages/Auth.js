@@ -49,7 +49,7 @@ const Auth = () => {
             "Content-Type": "application/json",
           }
         );
-        auth.login(response.user._id);
+        auth.login(response.userId, response.token);
       } catch (error) {}
     } else {
       try {
