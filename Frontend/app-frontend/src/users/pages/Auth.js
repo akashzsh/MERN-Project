@@ -14,10 +14,12 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
+import { useHistory } from "react-router-dom";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const history = useHistory();
   const { loading, error, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm(
@@ -69,6 +71,7 @@ const Auth = () => {
         auth.login(response.user._id);
       } catch (error) {}
     }
+    history.push("/");
   };
 
   const switchModeHandler = () => {
