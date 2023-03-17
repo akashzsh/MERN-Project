@@ -119,6 +119,9 @@ const updatePlace = async (req, res, next) => {
     return next(new HttpError("Could not update the place", 500));
   }
 
+  if (place.creatorId.toString() !== req.userData.userId)
+    return next(new HttpError("You are not allowed to edit this place", 401));
+
   try {
     await Place.updateOne(
       { _id: placeId },
@@ -143,6 +146,9 @@ const deletePlace = async (req, res, next) => {
 
   if (!place)
     return next(new HttpError("Could not find a place with the given id", 404));
+
+  if (place.creatorId.toString() !== req.userData.userId)
+    return next(new HttpError("You are not allowed to edit this place", 401));
 
   // For Image Cleaning
   const imagePath = place.image;
