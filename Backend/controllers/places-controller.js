@@ -66,19 +66,19 @@ const createPlace = async (req, res, next) => {
   if (!errors.isEmpty())
     return next(new HttpError("Invalid request body", 422));
 
-  const { title, description, address, creatorId } = req.body;
+  const { title, description, address } = req.body;
 
   const createdPlace = new Place({
     title,
     description,
     address,
     image: req.file.path,
-    creatorId,
+    creatorId: req.userData.userId,
   });
 
   let user;
   try {
-    user = await User.findById(creatorId);
+    user = await User.findById(req.userData.userId);
   } catch (error) {
     return next(
       new HttpError("Something went wrong. Could not add a place", 500)
