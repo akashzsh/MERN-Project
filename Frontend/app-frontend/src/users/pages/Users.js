@@ -11,7 +11,7 @@ export default function Users() {
   const getUsers = async () => {
     try {
       const response = await sendRequest(
-        "http://localhost:5000/api/users",
+        `${process.env.REACT_APP_BACKEND_URL}/users`,
         "get"
       );
       setLoadedUsers(response.users);

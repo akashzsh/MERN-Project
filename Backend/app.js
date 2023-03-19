@@ -44,7 +44,7 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    `mongodb+srv://akashzsh:${process.env.MONGODBPASSWORD}@mern.5gjhp6e.mongodb.net/mern_udemy?retryWrites=true&w=majority`
+    `mongodb+srv://${process.env.MONGODBUSERNAME}:${process.env.MONGODBPASSWORD}@mern.5gjhp6e.mongodb.net/${process.env.MONGODBNAME}?retryWrites=true&w=majority`
   )
   .then(() => app.listen(5000))
   .catch((error) => console.log(error));
