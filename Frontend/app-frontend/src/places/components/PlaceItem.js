@@ -40,7 +40,9 @@ const PlaceItem = (props) => {
         }
       );
       props.onDelete(props.id);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
     setShowConfirmModal(false);
   };
 

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import "./MainNavigation.css";
 import "../UIElements/Backdrop";
 
-const MainNavigation = (props) => {
+const MainNavigation = () => {
   const [open, setOpen] = useState(false);
 
   return (

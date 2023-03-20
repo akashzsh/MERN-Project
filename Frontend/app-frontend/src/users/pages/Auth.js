@@ -52,7 +52,9 @@ const Auth = () => {
           }
         );
         auth.login(response.userId, response.token);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       try {
         const formData = new FormData();
@@ -69,7 +71,9 @@ const Auth = () => {
           }
         );
         auth.login(response.user._id);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
     history.push("/");
   };

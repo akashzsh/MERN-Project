@@ -15,7 +15,9 @@ export default function Users() {
         "get"
       );
       setLoadedUsers(response.users);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

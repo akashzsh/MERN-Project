@@ -17,7 +17,9 @@ const UserPlaces = () => {
         `${process.env.REACT_APP_BACKEND_URL}/places/user/${userId}`
       );
       setLoadedPlaces(response.place);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {

@@ -55,7 +55,9 @@ const UpdatePlace = () => {
         },
         true
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -78,7 +80,9 @@ const UpdatePlace = () => {
         }
       );
       history.push(`/${auth.userId}/places`);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (loading) {

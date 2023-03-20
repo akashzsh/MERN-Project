@@ -60,7 +60,9 @@ export default function NewPlace() {
         }
       );
       history.push("/");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
